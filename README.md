@@ -1,13 +1,7 @@
 Cybercommons API 
 =======
 
-## DEVELOPMENTAL AT THIS POINT!!!
-
-
-The Cybercommons framework is a Django Rest Framework API. The API leverages MongoDB to provide a Catalog and Data Store for storing metadata and data within a JSON document database. The API also includes Celery which is an asynchronous task queue/job queue based on distributed message passing.
-
-DEVELOPMENTAL AT THIS POINT! This is not an offical release. Please experiment and provide Github Issues or a  Pull Request with added enhancements. 
-
+The Cybercommons framework is a Django Rest Framework API. The API leverages MongoDB to provide a Catalog and Data Store for storing metadata and data within a JSON document database. The API also includes Celery which is an asynchronous task queue/jobs based on distributed message passing.
 
 ## Requirements
 
@@ -19,22 +13,34 @@ DEVELOPMENTAL AT THIS POINT! This is not an offical release. Please experiment a
 ## Installation
 
 1. Edit values within dc_config/cybercom_config.env
-2. Copy secrets_template.env into secrets.env under the same folder and add required credentials into it. 
-3. Initialize database and generate internal SSL certs
+1. Copy secrets_template.env into secrets.env under the same folder and add required credentials into it. 
+1. Initialize database and generate internal SSL certs
 
-        $ make init
+    ```sh
+    make init
+    ```    
+1. Build and Deploy on local system.
 
-4. Build and Deploy on local system. You will be prompted to create an admin user account.
+    ```sh
+    make build
+    make superuser
+    make run
+    ```
 
-        $ make all
-        $ make run
+1. Make Django's static content available. This only needs to be ran once or after changing versions of Django.
 
-5. API running http://localhost
-    * Admin credentials set from above `make all` or create a new admin user using `make superuser` 
+    ```sh
+    make collectstatic
+    ```
 
-6. Shutdown and stop running instance
+1. API running http://localhost
+    * Admin credentials set from above `make superuser` 
 
-        $ make stop
+1. Shutdown cybercommons
+
+    ```sh
+    make stop
+    ```
 
 
 ### To run cybercommons on servers with a valid domain name.
@@ -42,28 +48,42 @@ DEVELOPMENTAL AT THIS POINT! This is not an offical release. Please experiment a
 ## Installation
 
 1. Edit values within dc_config/cybercom_config.env[NGINX_HOST,NOTIFY_EMAIL,NGINX_TEMPLATE(These values must be set).
-2. Copy secrets_template.env into secrets.env under the same folder and add required credentials into it.
-3. Initialize database and generate internal SSL certs
+1. Copy secrets_template.env into secrets.env under the same folder and add required credentials into it.
+1. Initialize database and generate internal SSL certs
 
-        $ make init
-4. Initialize and Get TLS certificates from LetsEncrypt
+    ```sh
+    make init
+    ```
+
+1. Initialize and Get TLS certificates from LetsEncrypt
         
-        $ make init_certbot
+    ```sh
+    make init_certbot
+    ```
 
-5. Build and Deploy on local system. You will be prompted to create an admin user account.
+1. Build and Deploy on local system.
 
-        $ make all
-        $ make run
+    ```sh
+    make build
+    make superuser
+    make run
+    ```
 
-6. API running https://{domain-name-of-server}
-    * Admin credentials set from above `make all` or create a new admin user using `make superuser`
+1. Make Django's static content available. This only needs to be ran once or after changing versions of Django.
 
-7. Shutdown and stop running instance
+    ```sh
+    make collectstatic
+    ```
 
-        $ make stop
+1. API running https://{domain-name-of-server}
+    * Admin credentials set from above `make superuser`
 
+1. Shutdown cybercommons
+
+    ```sh
+    make stop
+    ```
 
 ## TODO
 
-1. JWT PAY-LOAD
-2. Integration with Kubernetes
+1. Integration with Kubernetes
