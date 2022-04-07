@@ -9,14 +9,17 @@ additionalRepositories:
 tasks:
   - name: Setup cyberCommons
     before: cp dc_config/secrets_template.env dc_config/secrets.env
-    init: |
-      make init
-      make build
+    init: >
+      make init &&
+      make build &&
+      gp sync-done cyber # 'cyber' is arbitrary name
     command: make run
     
   - name: Setup Islandora remote worker
     before: cd ../islandora-remote
-    init: make init
+    init: >
+      gp sync-await cyber  # # wait for the above 'init' to finish
+      make init
     command: make run
 
 # Ports to expose on workspace startup
