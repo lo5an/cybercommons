@@ -16,7 +16,8 @@ tasks:
     command: make run
     
   - name: Setup Islandora remote worker
-    before: cd ../islandora-remote &&
+    before: | 
+      cd ../islandora-remote &&
       git checkout test
     init: |
       gp sync-await cyber  #  wait for the above 'init' to finish
