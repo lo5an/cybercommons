@@ -3,7 +3,7 @@
 # and commit this file to your remote git repository to share the goodness with others.
 
 additionalRepositories: 
-  - url: https://github.com/oulib-datacatalog/celery-remote-worker@test
+  - url: https://github.com/Rithsek99/celery-remote-worker@test
     checkoutLocation: islandora-remote
  
 tasks:
