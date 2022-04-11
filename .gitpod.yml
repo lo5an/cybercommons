@@ -8,11 +8,15 @@ tasks:
     init: |
       make init
       make build
+      gp sync-done cybercom-build
     command: make run
     
   - name: Setup Islandora remote worker
     before: cd ../islandora-remote
-    init: make init
+    init: |
+      gp sync-await cybercom-build
+      git checkout islandoraq
+      make init
     command: make run
 
 # Ports to expose on workspace startup
