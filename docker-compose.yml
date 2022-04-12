@@ -4,10 +4,10 @@ services:
     image: nginx:${NGINX_VERSION}
     restart: unless-stopped
     expose:
-      - 80
+      - 8080
       - 443
     ports:
-      - 80:80
+      - "8080:80"
       - 443:443
     depends_on:
       - cybercom_api

@@ -9,11 +9,13 @@ additionalRepositories:
 tasks:
   - name: Setup cyberCommons
     before: cp dc_config/secrets_template.env dc_config/secrets.env
+    #env:
+    #  PORT: 8080
     init: |
       make init &&
       make build &&
       gp sync-done cyber # 'cyber' is arbitrary name
-    command: make run
+    command: make run 
     
   - name: Setup Islandora remote worker
     before: | 
@@ -26,7 +28,7 @@ tasks:
 
 # Ports to expose on workspace startup
 ports:
-  - port: 80
+  - port: 8080
     onOpen: open-preview
     visibility: private
   - port: 443
