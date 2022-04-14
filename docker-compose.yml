@@ -4,10 +4,10 @@ services:
     image: nginx:${NGINX_VERSION}
     restart: unless-stopped
     expose:
-      - 8080
+      - ${PORT:-80}
       - 443
     ports:
-      - "8080:80"
+      - ${PORT:-80}:80
       - 443:443
     depends_on:
       - cybercom_api
@@ -90,7 +90,7 @@ services:
       - ./db.sqlite3:/app/db.sqlite3
       - ./web/static:/app/static
     expose:
-      - 8080
+      - ${PORT:-80}
     depends_on:
       - cybercom_mongo
       - cybercom_rabbitmq
