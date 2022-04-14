@@ -8,6 +8,11 @@ endif
 	@cp dc_config/secrets_template.env dc_config/secrets.env
 	@$${EDITOR:-nano} dc_config/secrets.env
 
+# Set GIDPOD_PORT to 8080 if run in gitpod
+ifdef GITPOD_WORKSPACE_ID
+	GIDPOD_PORT=8080
+endif
+
 include dc_config/cybercom_config.env
 include dc_config/secrets.env
 
@@ -88,3 +93,5 @@ restart_api:
 collectstatic:
 	@docker-compose run --rm cybercom_api ./manage.py collectstatic --noinput
 
+gitpod:
+	echo $$GIDPOD_PORT

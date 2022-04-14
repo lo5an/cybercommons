@@ -15,7 +15,7 @@ tasks:
       make init &&
       make build &&
       gp sync-done cyber # 'cyber' is arbitrary name
-    command: make run && echo $PORT
+    command: echo $GIDPOD_PORT && make run 
     
   - name: Setup Islandora remote worker
     before: | 
@@ -28,7 +28,7 @@ tasks:
 
 # Ports to expose on workspace startup
 ports:
-  - port: ${PORT:-80}
+  - port: 8080
     onOpen: open-preview
     visibility: private
   - port: 443
