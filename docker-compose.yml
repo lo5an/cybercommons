@@ -88,6 +88,7 @@ services:
     environment:
       - GITPOD_WORKSPACE_ID
       - GITPOD_WORKSPACE_CLUSTER_HOST
+      - ALLOWED_HOSTS
     volumes:
       - ./dc_config/ssl/backend:/ssl
       - ./db.sqlite3:/app/db.sqlite3

@@ -30,7 +30,7 @@ SESSION_COOKIE_DOMAIN = None
 CSRF_COOKIE_DOMAIN = None
 GITPODID = os.getenv('GITPOD_WORKSPACE_ID')
 if GITPODID:
-    URL = '8080-'+GITPODID + '.' + os.getenv("GITPOD_WORKSPACE_CLUSTER_HOST")
+    URL = '80-'+GITPODID + '.' + os.getenv("GITPOD_WORKSPACE_CLUSTER_HOST")
     CSRF_TRUSTED_ORIGINS = [URL]
 
 # If you want to mount API with nginx with location other than /
