@@ -8,8 +8,15 @@ endif
 	@cp dc_config/secrets_template.env dc_config/secrets.env
 	@$${EDITOR:-nano} dc_config/secrets.env
 
+
 include dc_config/cybercom_config.env
 include dc_config/secrets.env
+
+# Set GITPOD_PORT to 8080 if run in gitpod
+ifneq ($(strip $(GITPOD_WORKSPACE_ID)),)
+	GITPOD_PORT = 8080
+	ALLOWED_HOSTS = .gitpod.io,localhost
+endif
 
 COMPOSE_INIT = docker-compose -f dc_config/images/docker-compose-init.yml
 CERTBOT_INIT = docker-compose -f dc_config/images/certbot-initialization.yml
@@ -87,4 +94,3 @@ restart_api:
 
 collectstatic:
 	@docker-compose run --rm cybercom_api ./manage.py collectstatic --noinput
-
