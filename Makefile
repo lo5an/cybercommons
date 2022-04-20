@@ -94,7 +94,3 @@ restart_api:
 
 collectstatic:
 	@docker-compose run --rm cybercom_api ./manage.py collectstatic --noinput
-
-gitpod:
-	echo $$GITPOD_PORT
-	echo $$GITPOD_WORKSPACE_ID
