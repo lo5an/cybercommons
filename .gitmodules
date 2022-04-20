@@ -1,3 +1,0 @@
-[submodule "celery-remote-worker"]
-	path = celery-remote-worker
-	url = https://github.com/Rithsek99/celery-remote-worker.git
