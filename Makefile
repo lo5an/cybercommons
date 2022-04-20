@@ -12,9 +12,9 @@ endif
 include dc_config/cybercom_config.env
 include dc_config/secrets.env
 
-# Set GIDPOD_PORT to 8080 if run in gitpod
+# Set GITPOD_PORT to 8080 if run in gitpod
 ifneq ($(strip $(GITPOD_WORKSPACE_ID)),)
-	GIDPOD_PORT = 8080
+	GITPOD_PORT = 8080
 	ALLOWED_HOSTS = .gitpod.io,localhost
 endif
 
@@ -96,5 +96,5 @@ collectstatic:
 	@docker-compose run --rm cybercom_api ./manage.py collectstatic --noinput
 
 gitpod:
-	echo $$GIDPOD_PORT
+	echo $$GITPOD_PORT
 	echo $$GITPOD_WORKSPACE_ID

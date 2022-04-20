@@ -28,10 +28,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # wild card '*.example.edu'
 SESSION_COOKIE_DOMAIN = None
 CSRF_COOKIE_DOMAIN = None
+
+# Set CSRF trusted origin if running in gitpod.io
 GITPODID = os.getenv('GITPOD_WORKSPACE_ID')
 if GITPODID:
-    URL = '80-'+GITPODID + '.' + os.getenv("GITPOD_WORKSPACE_CLUSTER_HOST")
-    CSRF_TRUSTED_ORIGINS = [URL]
+    GITPODPORT = os.getenv('GITPOD_PORT')
+    GITPODHOST = os.getenv("GITPOD_WORKSPACE_CLUSTER_HOST")
+    GITPODURL = f"{GITPODPORT}-{GITPODID}.{GITPODHOST}"
+    CSRF_TRUSTED_ORIGINS = [GITPODURL]
 
 # If you want to mount API with nginx with location other than /
 # Change to desired url - '/api/'
