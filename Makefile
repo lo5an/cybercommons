@@ -21,6 +21,8 @@ endif
 COMPOSE_INIT = docker-compose -f dc_config/images/docker-compose-init.yml
 CERTBOT_INIT = docker-compose -f dc_config/images/certbot-initialization.yml
 
+SHELL = /bin/bash
+
 .PHONY: init intidb initssl superuser init_certbot renew_certbot shell apishell dbshell build force_build run stop test restart_api collectstatic
 
 .EXPORT_ALL_VARIABLES:
@@ -58,7 +60,7 @@ renew_certbot:
 
 shell:
 	@echo "Loading new shell with configured environment"
-	@$$SHELL
+	@$(SHELL)
 
 apishell:
 	@echo "Launching shell into Django"
