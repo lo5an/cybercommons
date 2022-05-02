@@ -122,13 +122,13 @@ def MongoDataPagination(DB_MongoClient, database, collection, query=None, page=1
         except:
             raise Exception("Query: JSON object could be decoded")
 
-        count = db[database][collection].find(**query).count()
+        count = db[database][collection].count_documents(**query)
         #set page variables
         page,offset,max_page = set_pagination_vars(count,page,nPerPage)
         #Data
         data = [row for row in db[database][collection].find(**query).skip(offset).limit(nPerPage)]
     else:
-        count = db[database][collection].find().count()
+        count = db[database][collection].count_documents({})
         #set page variables
         page,offset,max_page = set_pagination_vars(count,page,nPerPage)
         #Data
