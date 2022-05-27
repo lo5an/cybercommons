@@ -43,6 +43,10 @@ initssl:
 	$(COMPOSE_INIT) up cybercom_openssl_init
 	$(COMPOSE_INIT) down
 
+cert_dates:
+	# Show valid date ranges for backend ssl certificates
+	@$(COMPOSE_INIT) run --rm cybercom_openssl_init openssl x509 -noout -dates -in /ssl/server/cert.pem
+
 superuser:
 	@docker-compose run --rm cybercom_api ./manage.py createsuperuser 
 
