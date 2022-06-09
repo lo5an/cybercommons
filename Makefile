@@ -21,7 +21,9 @@ endif
 COMPOSE_INIT = docker-compose -f dc_config/images/docker-compose-init.yml
 CERTBOT_INIT = docker-compose -f dc_config/images/certbot-initialization.yml
 
-.PHONY: init intidb initssl superuser init_certbot renew_certbot shell apishell dbshell build force_build run stop test restart_api collectstatic
+SHELL = /bin/bash
+
+.PHONY: init intidb initssl cert_dates superuser init_certbot renew_certbot shell apishell dbshell build force_build run stop test restart_api collectstatic
 
 .EXPORT_ALL_VARIABLES:
 UID=$(shell id -u)
@@ -41,6 +43,10 @@ initssl:
 	$(COMPOSE_INIT) up cybercom_openssl_init
 	$(COMPOSE_INIT) down
 
+cert_dates:
+	# Show valid date ranges for backend ssl certificates
+	@$(COMPOSE_INIT) run --rm cybercom_openssl_init openssl x509 -noout -dates -in /ssl/server/cert.pem
+
 superuser:
 	@docker-compose run --rm cybercom_api ./manage.py createsuperuser 
 
@@ -58,7 +64,7 @@ renew_certbot:
 
 shell:
 	@echo "Loading new shell with configured environment"
-	@$$SHELL
+	@$(SHELL)
 
 apishell:
 	@echo "Launching shell into Django"

@@ -67,6 +67,12 @@ services:
     depends_on:
       - cybercom_mongo
       - cybercom_rabbitmq
+    healthcheck:
+      test: ["CMD", "celery", "inspect", "active"]
+      interval: 30s 
+      timeout: 10s
+      retries: 3
+      start_period: 15s
   cybercom_api:
     deploy:
       resources:
@@ -92,7 +98,7 @@ services:
       - ALLOWED_HOSTS
     volumes:
       - ./dc_config/ssl/backend:/ssl
-      - ./db.sqlite3:/app/db.sqlite3
+      - sqlite3/db.sqlite3:/app/db.sqlite3
       - ./web/static:/app/static
     expose:
       - 8080
@@ -102,4 +108,7 @@ services:
 volumes:
   mongodata:
     name: "${MONGO_DOCKER_VOLUME_PREFIX}_mongo"
+    external: true
+  sqlite3:
+    name: cc_sqlite3
     external: true
