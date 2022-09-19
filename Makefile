@@ -98,5 +98,6 @@ test:
 restart_api:
 	@docker-compose restart cybercom_api
 
-collectstatic:
+collectstatic: 
+	@mkdir -p web/static
 	@docker-compose run --rm cybercom_api ./manage.py collectstatic --noinput
