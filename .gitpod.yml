@@ -12,6 +12,7 @@ tasks:
     init: |
       make init &&
       make build &&
+      make collectstatic &&
       gp sync-done cyber # 'cyber' is arbitrary name
     command: make run 
     
