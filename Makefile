@@ -57,10 +57,9 @@ init_certbot:
 
 renew_certbot:
 	$(CERTBOT_INIT) run --rm cybercom_certbot
-	# FIXME: the following is not reloading certs
-	#@docker-compose exec cybercom_nginx nginx -s reload
-	# This is a work around until the reload signal is fixed
-	@docker-compose restart cybercom_nginx
+	# This requires an init process running in the container
+	# https://docs.docker.com/compose/compose-file/compose-file-v3/#init
+	@docker-compose exec cybercom_nginx nginx -s reload
 
 shell:
 	@echo "Loading new shell with configured environment"
