@@ -1,4 +1,4 @@
-ARG DOCKER_PYTHON_VERSION=3.6-slim-buster
+ARG DOCKER_PYTHON_VERSION=3.9-slim-bullseye 
 FROM python:$DOCKER_PYTHON_VERSION
 
 ARG UNAME=apiuser
@@ -9,7 +9,8 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONUNBUFFERED=1
 
 WORKDIR /
 COPY requirements.txt ./
-RUN python -m pip install --no-cache-dir -r requirements.txt \
+RUN python -m pip install --no-cache-dir --upgrade pip \
+  && python -m pip install --no-cache-dir -r requirements.txt \
   && rm requirements.txt
 
 COPY . /app

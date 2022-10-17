@@ -13,6 +13,7 @@ import types
 import json
 import logging
 from bson.objectid import ObjectId
+from pymongo.results import InsertOneResult, InsertManyResult
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,10 @@ class JSONEncoder(json.JSONEncoder):
     decimal types, and generators.
     """
     def default(self, o):
+        if isinstance(o, InsertOneResult):
+            return o.inserted_id
+        if isinstance(o, InsertManyResult):
+            return [_id for _id in o.inserted_ids]
         if isinstance(o, ObjectId):
             return str(o)
         # For Date Time string spec, see ECMA 262

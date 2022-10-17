@@ -24,13 +24,16 @@ The execution units, called tasks, are executed concurrently on a single or more
 
 1. Create virtual environment and activate
 
-        $ python -m venv virtpy
-        $ source virtpy/bin/activate
-
+    ```sh
+    python -m venv virtpy
+    source virtpy/bin/activate
+    ```
 
 1. Install Celery
-
-        (virtpy) $ pip install Celery
+    
+    ```sh
+    (virtpy) $ pip install Celery
+    ```
 
 
 ## Configuration
@@ -38,52 +41,57 @@ The execution units, called tasks, are executed concurrently on a single or more
 
 1. Download example celeryconfig.py and requirements.txt
 
-        ```sh
-        $ wget https://raw.githubusercontent.com/cybercommons/cybercommons/master/docs/pages/files/celeryconfig.py
-        ```
+    ```sh
+    wget https://raw.githubusercontent.com/cybercommons/cybercommons/master/docs/pages/files/celeryconfig.py
+    ```
+1. Create SSL directory and copy cyberCommon's client certificates
 
-2. Create SSL directory and copy cyberCommon's client certificates
+    ```sh
+    mkdir ssl
+    cp mongodb.pem ssl/
+    cp key.pem ssl/
+    cp cert.pem ssl/
+    cp cacert.pem ssl/
+    ```
+1. Configure celeryconfig.py to point to client certificates and use corresponding credentials (values in this example between "<" and ">" need to be updated to match your cyberCommon's configuration. Do not include the "<" and ">" characters.)
 
-        ```sh
-        mkdir ssl
-        cp mongodb.pem ssl/
-        cp key.pem ssl/
-        cp cert.pem ssl/
-        cp cacert.pem ssl/
-        ```
-
-3. Configure celeryconfig.py to point to client certificates and use corresponding credentials (values in this example between "<" and ">" need to be updated to match your cyberCommon's configuration. Do not include the "<" and ">" characters.)
-
-        broker_url = 'amqp://<username>:<password>@<broker_host>:<broker_port>/<broker_vhost>'
-        broker_use_ssl = {
-            'keyfile': 'ssl/key.pem',
-            'certfile': 'ssl/cert.pem',
-            'ca_certs': 'ssl/cacert.pem',
-            'cert_reqs': ssl.CERT_REQUIRED
-        }
+    ```sh
+    broker_url = 'amqp://<username>:<password>@<broker_host>:<broker_port>/<broker_vhost>'
+    broker_use_ssl = {
+        'keyfile': 'ssl/key.pem',
+        'certfile': 'ssl/cert.pem',
+        'ca_certs': 'ssl/cacert.pem',
+        'cert_reqs': ssl.CERT_REQUIRED
+    }
 
 
-        result_backend = "mongodb://<username>:<password>@<mongo_host>:<mongo_port>/?ssl=true&ssl_ca_certs=ssl/cacert.pem>&ssl_certfile=mongodb.pem>"
+    result_backend = "mongodb://<username>:<password>@<mongo_host>:<mongo_port>/?ssl=true&ssl_ca_certs=ssl/cacert.pem>&ssl_certfile=mongodb.pem>"
 
-        mongodb_backend_settings = {
-            "database": "<application_short_name>",
-            "taskmeta_collection": "tombstone"
-        }
+    mongodb_backend_settings = {
+        "database": "<application_short_name>",
+        "taskmeta_collection": "tombstone"
+    }
+    ```
 
 ### Configure Tasks
 
 1. Update requirements.txt to include desired libraries and task handlers.
-2. Update celeryconfig.py to import task handlers that have been included in requirements file.
+1. Update celeryconfig.py to import task handlers that have been included in requirements file.
+ 
+    ```sh
+    imports = ("cybercomq", "name_of_additional_task_handler_library", )
+    ```
 
-        imports = ("cybercomq", "name_of_additional_task_handler_library", )
+1. Install requirements
 
-3. Install requirements
-
-        (virtpy) $ pip install -r requirements.txt
-
+    ```sh
+    (virtpy) $ pip install -r requirements.txt
+    ```
 
 ### Launch Celery worker
 
-* Run in foreground. See [Celery Worker Documentation](https://docs.celeryproject.org/en/stable/reference/cli.html#celery-worker) for more information.
+1. Run in foreground. See [Celery Worker Documentation](https://docs.celeryproject.org/en/stable/reference/cli.html#celery-worker) for more information.
 
-        $ celery worker -Q remote -l INFO -n dev-hostname
+    ```sh
+    celery worker -Q remote -l INFO -n dev-hostname
+    ```

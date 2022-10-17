@@ -10,7 +10,6 @@ class CCAPITest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username='testuser',
-            password='testuserpass'
         )
         self.apiroot_view = APIRoot.as_view()
         self.userprofile_view = UserProfile.as_view()

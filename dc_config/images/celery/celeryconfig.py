@@ -27,7 +27,7 @@ accept_content = ['json']
 SSL_PATH = os.environ.get('SSL_PATH')
 MONGO_USERNAME = os.environ.get('MONGO_USERNAME')
 MONGO_PASSWORD = os.environ.get('MONGO_PASSWORD')
-result_backend = f"mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@cybercom_mongo:27017/?ssl=true&ssl_ca_certs={SSL_PATH}/testca/cacert.pem&ssl_certfile={SSL_PATH}/client/mongodb.pem" 
+result_backend = f"mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@cybercom_mongo:27017/?ssl=true&tlsCAFile={SSL_PATH}/testca/cacert.pem&tlsCertificateKeyFile={SSL_PATH}/client/mongodb.pem" 
 
 mongodb_backend_settings = {
     "database": os.environ.get('MONGO_DB', "cybercom"),

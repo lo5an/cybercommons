@@ -134,8 +134,8 @@ class Run(APIView):
         if type(kwargs) is not dict:
             return Response({'error': 'kwargs must be a JSON object'})
         tags = request.data.get('tags', [])
-        user_info = request.user.__class__.objects.filter(pk=request.user.id).values().first()
-        user_info.pop('password', None)
+        user_info_fields = ['username']  # add django user field names here to pass them on to celery
+        user_info = {field: getattr(request.user, field) for field in user_info_fields}
         result = self.q.run(task_name, args, kwargs, queue,
                             user_info, tags)
         result['result_url'] = reverse(

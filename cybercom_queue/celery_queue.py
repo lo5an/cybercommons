@@ -70,7 +70,7 @@ class QueueTask():
         #     task, args=task_args, kwargs=task_kwargs, queue=task_queue, track_started=True,headers={"authenticated_user":user_info})
         task_log = {
             'task_id': task_obj.task_id,
-            'user': user_info['username'],
+            'user': user_info,
             'task_name': task,
             'args': task_args,
             'kwargs': task_kwargs,
@@ -203,13 +203,12 @@ class QueueTask():
         if task_name:
             tasks_list=task_name.split(',')
             result['count'] = col.find(
-                {'task_name': {"$in":tasks_list}, 'user': user}).count()
-            data = col.find({'task_name': {"$in":tasks_list}, 'user': user}, {'_id': False}, skip=(page - 1) * limit,
+                {'task_name': {"$in":tasks_list}, 'user.username': user}).count()
+            data = col.find({'task_name': {"$in":tasks_list}, 'user.username': user}, {'_id': False}, skip=(page - 1) * limit,
                             limit=limit).sort('timestamp', DESCENDING)
         else:
-            data = col.find({'user': user}, {'_id': False}, skip=(page - 1) * limit, limit=limit).sort('timestamp',
-                                                                                                       DESCENDING)
-            result['count'] = col.find({'user': user}).count()
+            data = col.find({'user.username': user}, {'_id': False}, skip=(page - 1) * limit, limit=limit).sort('timestamp',DESCENDING)
+            result['count'] = col.find({'user.username': user}).count()
         if result['count'] <= page*limit:
             if page != 1:
                 result['previous'] = "%s?page=%d&page_size=%d" % (
