@@ -9,7 +9,7 @@ from api import config
 from .models import dataStore
 # Create your views here.
 from rest_framework.settings import api_settings
-from .mongo_paginator import MongoDataPagination, MongoDistinct,MongoGroupby, MongoDataGet,MongoDataDelete,MongoDataSave,MongoDataInsert, MongoAggregate
+from .mongo_paginator import MongoDataPagination, MongoDataUpdate, MongoDistinct,MongoGroupby, MongoDataGet,MongoDataDelete,MongoDataSave,MongoDataInsert, MongoAggregate
 from .renderer import DataBrowsableAPIRenderer, mongoJSONPRenderer,mongoJSONRenderer
 from rest_framework_xml.renderers import XMLRenderer
 from rest_framework_yaml.renderers import YAMLRenderer
@@ -17,6 +17,8 @@ from rest_framework_yaml.renderers import YAMLRenderer
 from rest_framework.parsers import JSONParser
 from .permission import  DataStorePermission, createDataStorePermission
 from celery import Celery
+from bson import ObjectId
+from bson.errors import InvalidId
 
 
 class celeryConfig:
@@ -166,7 +168,18 @@ class DataStore(APIView):
 
     def post(self, request, database=None, collection=None, format=None):
         try:
-            result = MongoDataInsert(self.db, database, collection, request.data)
+            data = request.data
+            if type(data) == list and any([record.get("_id") for record in data]):  # The underlying upsert functionality does not properly handle multiple items with existing _id fields
+                raise ValidationError({"data":"Updating multiple records in a single request is not supported"})
+            existing_id = data.get("_id") if type(data) != list else None
+            if existing_id:
+                try:
+                    data["_id"] = ObjectId(existing_id)
+                except InvalidId:
+                    raise ValidationError({"data": "Invalid '_id' used, must be 24-character hex string or omit '_id' to create new record","error":"Invalid '_id'"})
+                result = MongoDataUpdate(self.db, database, collection, data)
+            else:
+                result = MongoDataInsert(self.db, database, collection, data)
             return Response(result)
         except Exception as e:
             raise ValidationError({"data":"Error inserting data, If '_id' is within data, please check '_id' duplication.","error":str(e)})

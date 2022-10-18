@@ -145,6 +145,7 @@ def MongoDataPagination(DB_MongoClient, database, collection, query=None, page=1
         od = OrderedDict(sorted(result.items()))
     return od
 
+# FIXME: combine update and insert to handle one or many records and with or without _id
 def MongoDataInsert(DB_MongoClient, database, collection,data):
     db = DB_MongoClient
     #Update if data already in collection
@@ -157,7 +158,11 @@ def MongoDataInsert(DB_MongoClient, database, collection,data):
         return db[database][collection].insert_many(data)
     else:
         return db[database][collection].insert_one(data)
-    
+
+def MongoDataUpdate(DB_MongoClient, database, collection,data):
+    DB_MongoClient[database][collection].update_one({"_id": data["_id"]}, {"$set": data})
+    return data["_id"]
+
 def MongoDataGet(DB_MongoClient, database, collection,id):
     db = DB_MongoClient
     term_id=get_id(id)
