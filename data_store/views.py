@@ -169,12 +169,12 @@ class DataStore(APIView):
     def post(self, request, database=None, collection=None, format=None):
         try:
             data = request.data
-            if type(data) == list and any([record.get("_id") for record in data]):  # The underlying upsert functionality does not properly handle multiple items with existing _id fields
+            if isinstance(data, list) and any([record.get("_id") for record in data]):  # The underlying upsert functionality does not properly handle multiple items with existing _id fields
                 raise ValidationError({"data":"Updating multiple records in a single request is not supported"})
             existing_id = data.get("_id") if type(data) != list else None
             if existing_id:
                 try:
-                    data["_id"] = ObjectId(existing_id)
+                    data["_id"] = existing_id if isinstance(existing_id, ObjectId) else ObjectId(existing_id)
                 except InvalidId:
                     raise ValidationError({"data": "Invalid '_id' used, must be 24-character hex string or omit '_id' to create new record","error":"Invalid '_id'"})
                 result = MongoDataUpdate(self.db, database, collection, data)

@@ -9,6 +9,7 @@ from operator import itemgetter
 
 from collections import OrderedDict
 from rest_framework.templatetags.rest_framework import replace_query_param
+from pymongo import MongoClient
 
 logger = logging.getLogger(__name__)
 
@@ -159,9 +160,11 @@ def MongoDataInsert(DB_MongoClient, database, collection,data):
     else:
         return db[database][collection].insert_one(data)
 
-def MongoDataUpdate(DB_MongoClient, database, collection,data):
-    DB_MongoClient[database][collection].update_one({"_id": data["_id"]}, {"$set": data})
-    return data["_id"]
+def MongoDataUpdate(DB_MongoClient: MongoClient, database: str, collection: str, data: dict) -> str:
+    _id = data.get("_id")
+    if _id and isinstance(_id, ObjectId):
+        DB_MongoClient[database][collection].update_one({"_id": _id}, {"$set": data})
+        return str(_id)
 
 def MongoDataGet(DB_MongoClient, database, collection,id):
     db = DB_MongoClient
@@ -170,6 +173,7 @@ def MongoDataGet(DB_MongoClient, database, collection,id):
     if not data:
         data = {"Error":"DATA RECORD NOT FOUND"}
     return data
+
 def MongoDataDelete(DB_MongoClient, database, collection,id):
     db = DB_MongoClient
     term_id=get_id(id)
@@ -178,13 +182,10 @@ def MongoDataDelete(DB_MongoClient, database, collection,id):
         return result
     else:
         return {"Error":"UNABLE TO DELETE: DATA RECORD NOT FOUND"}
+
 def MongoDataSave(DB_MongoClient, database, collection,id,data):
-    db = DB_MongoClient
-    term_id=get_id(id)
-    if db[database][collection].find_one({'_id':term_id}):
-        return db[database][collection].save(data)
-    else:
-        return {"Error":"UNABLE TO UPDATE: DATA RECORD NOT FOUND"}
+    data["_id"] = ObjectId(id) if not data.get("_id") else ObjectId(data["_id"])
+    return MongoDataUpdate(DB_MongoClient, database, collection, data)
 
 def is_number(n):
     try:
