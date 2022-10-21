@@ -18,9 +18,15 @@ ifneq ($(strip $(GITPOD_WORKSPACE_ID)),)
 	ALLOWED_HOSTS = .gitpod.io,localhost
 endif
 
-COMPOSE_INIT = docker-compose -f dc_config/images/docker-compose-init.yml
-CERTBOT_INIT = docker-compose -f dc_config/images/certbot-initialization.yml
-DJANGO_MANAGE = docker-compose run --rm cybercom_api ./manage.py
+ifeq ($(strip $(shell docker compose 1>/dev/null && echo 0)),0)
+	COMPOSE := docker compose
+else
+	COMPOSE := docker-compose
+endif
+
+COMPOSE_INIT = $(COMPOSE) -f dc_config/images/docker-compose-init.yml
+CERTBOT_INIT = $(COMPOSE) -f dc_config/images/certbot-initialization.yml
+DJANGO_MANAGE = $(COMPOSE) run --rm cybercom_api ./manage.py
 
 SHELL = /bin/bash
 
@@ -67,7 +73,7 @@ renew_certbot:
 	$(CERTBOT_INIT) run --rm cybercom_certbot
 	# This requires an init process running in the container
 	# https://docs.docker.com/compose/compose-file/compose-file-v3/#init
-	@docker-compose exec cybercom_nginx nginx -s reload
+	@$(COMPOSE) exec cybercom_nginx nginx -s reload
 
 shell:
 	@echo "Loading new shell with configured environment"
@@ -75,11 +81,11 @@ shell:
 
 apishell:
 	@echo "Launching shell into Django"
-	@docker-compose exec cybercom_api python manage.py shell
+	@$(COMPOSE) exec cybercom_api python manage.py shell
 
 dbshell:
 	@echo "Launching shell into MongoDB"
-	@docker-compose exec cybercom_mongo mongo admin \
+	@$(COMPOSE) exec cybercom_mongo mongo admin \
 		--tls \
 		--host cybercom_mongo \
 		--tlsCertificateKeyFile /ssl/client/mongodb.pem \
@@ -88,23 +94,23 @@ dbshell:
 		--password $$MONGO_PASSWORD
 
 build:
-	@docker-compose --compatibility build
+	@$(COMPOSE) --compatibility build
 
 force_build:
-	@docker-compose --compatibility build --no-cache
+	@$(COMPOSE) --compatibility build --no-cache
 
 run:
-	@docker-compose --compatibility up -d
+	@$(COMPOSE) --compatibility up -d
 
 stop:
-	@docker-compose --compatibility down
+	@$(COMPOSE) --compatibility down
 
 test:
-	@docker-compose exec cybercom_api python -Wa manage.py test
+	@$(COMPOSE) exec cybercom_api python -Wa manage.py test
 
 restart_api:
-	@docker-compose restart cybercom_api
+	@$(COMPOSE) restart cybercom_api
 
 collectstatic: 
 	@mkdir -p web/static
-	@docker-compose run --rm cybercom_api ./manage.py collectstatic --noinput
+	@$(COMPOSE) run --rm cybercom_api ./manage.py collectstatic --noinput
