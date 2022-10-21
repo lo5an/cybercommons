@@ -31,7 +31,7 @@ DJANGO_MANAGE = $(COMPOSE) run --rm cybercom_api ./manage.py
 SHELL = /bin/bash
 
 .PHONY: init intidb initssl cert_dates superuser migrate flush init_certbot renew_certbot \
-	shell apishell dbshell build force_build run stop test restart_api collectstatic
+	shell apishell celeryshell dbshell build force_build run stop test restart_api collectstatic
 
 .EXPORT_ALL_VARIABLES:
 UID=$(shell id -u)
@@ -82,6 +82,10 @@ shell:
 apishell:
 	@echo "Launching shell into Django"
 	@$(COMPOSE) exec cybercom_api python manage.py shell
+
+celeryshell:
+	@echo "Lanuching shell into Celery"
+	@$(COMPOSE) exec cybercom_celery celery shell
 
 dbshell:
 	@echo "Launching shell into MongoDB"
