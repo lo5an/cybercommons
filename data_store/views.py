@@ -50,7 +50,7 @@ class MongoDataStore(APIView):
         urls = []
         if database:
             self.title = "Collection"
-            data = list(self.db[database].collection_names())
+            data = list(self.db[database].list_collection_names())
             data.sort()
             for col in data:
                 if "%s.%s" % (database, col) in self.exclude or col in self.exclude:
@@ -65,7 +65,7 @@ class MongoDataStore(APIView):
             if self.name == "Catalog":
                 data = self.include
             else:
-                data = list(self.db.database_names())
+                data = list(self.db.list_database_names())
                 data.sort()
 
             for db in data:
@@ -103,9 +103,12 @@ class MongoDataStore(APIView):
             col = request.data.get('collection', None)
             if col:
                 data = request.data.get('data', {})
-                self.db[database][col].insert_one(data)
-                self.db[database][col].remove({})
-                return Response({'database': database, 'collection': col})
+                if self.db[database][col].estimated_document_count() == 0:
+                    self.db[database][col].insert_one(data)
+                    if not data:
+                        self.db[database][col].delete_one({})
+                    return Response({'database': database, 'collection': col})
+                return Response({'ERROR': f'Collection already exists'})
             else:
                 return Response({'ERROR': "Must submit 'collection' name as part of post"})
         else:

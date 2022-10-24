@@ -51,7 +51,7 @@ def MongoAggregate(aggregate, DB_MongoClient, database, collection, query=None):
     try:
         aggregate = json.loads(aggregate)
         if query:
-            aggregate.insert(0, query)
+            aggregate.insert_one(0, query)
     except:
         raise Exception("Aggregate: JSON object could be decoded")
 
@@ -68,6 +68,7 @@ def MongoGroupby(variable,groupby,DB_MongoClient, database, collection, query=No
             raise Exception("Query: JSON object could be decoded")
     db = DB_MongoClient[database][collection]
     reducer = Code(" function(obj,prev) {prev.Sum += obj.%s;prev.count+=1; prev.Avg = prev.Sum/prev.count;}" % (variable))
+    # FIXME: group is replaced by aggregate - https://www.mongodb.com/docs/upcoming/reference/operator/aggregation/group/
     results = db.group(groupby,query,{'Sum':0,'Avg':0,'count':0,'Variable':variable},reducer)
     data_out=[]
     try:
@@ -123,13 +124,13 @@ def MongoDataPagination(DB_MongoClient, database, collection, query=None, page=1
         except:
             raise Exception("Query: JSON object could be decoded")
 
-        count = db[database][collection].find(**query).count()
+        count = db[database][collection].count_documents(**query)
         #set page variables
         page,offset,max_page = set_pagination_vars(count,page,nPerPage)
         #Data
         data = [row for row in db[database][collection].find(**query).skip(offset).limit(nPerPage)]
     else:
-        count = db[database][collection].find().count()
+        count = db[database][collection].estimated_document_count()
         #set page variables
         page,offset,max_page = set_pagination_vars(count,page,nPerPage)
         #Data
@@ -153,7 +154,7 @@ def MongoDataInsert(DB_MongoClient, database, collection,data):
     # if '_id' in data:
     #     id=data['_id']
     #     return MongoDataSave(DB_MongoClient, database, collection,id,data)
-    #return db[database][collection].insert(data)
+    #return db[database][collection].insert_one(data)
     if type(data) == type([]):
         #print(dir(db[database][collection]))
         return db[database][collection].insert_many(data)
