@@ -89,7 +89,7 @@ celeryshell:
 
 dbshell:
 	@echo "Launching shell into MongoDB"
-	@$(COMPOSE) exec cybercom_mongo mongo admin \
+	@$(COMPOSE) exec cybercom_mongo mongosh  \
 		--tls \
 		--host cybercom_mongo \
 		--tlsCertificateKeyFile /ssl/client/mongodb.pem \
