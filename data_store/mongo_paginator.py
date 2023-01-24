@@ -191,7 +191,7 @@ def MongoDataSave(DB_MongoClient, database, collection,id,data):
 def is_number(n):
     try:
         float(n)
-    except ValueError:
+    except (ValueError, TypeError):
         return False
     else:
         return True
