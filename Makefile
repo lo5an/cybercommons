@@ -104,11 +104,19 @@ force_build:
 	@$(COMPOSE) --compatibility build --no-cache
 
 run:
-	@$(COMPOSE) --compatibility up -d
+ifeq ($(USE_LOCAL_MONGO),True)
+	@docker-compose --profile mongo --compatibility up -d
+else
+	@docker-compose --compatibility up -d
+endif
 
 stop:
-	@$(COMPOSE) --compatibility down
-
+ifeq ($(USE_LOCAL_MONGO),True)
+	@docker-compose --profile mongo --compatibility down
+else
+	@docker-compose --compatibility down
+endif
+	
 test:
 	@$(COMPOSE) exec cybercom_api python -Wa manage.py test
 
