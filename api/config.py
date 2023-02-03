@@ -35,7 +35,9 @@ MONGO_USERNAME = os.environ.get('MONGO_USERNAME')
 MONGO_PASSWORD = os.environ.get('MONGO_PASSWORD')
 MONGO_HOST = os.environ.get('MONGO_HOST', 'cybercom_mongo')
 MONGO_PORT = os.environ.get('MONGO_PORT', '27017')
-MONGO_URI = f"mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}/?ssl=true&tlsCAFile={SSL_PATH}/testca/cacert.pem&tlsCertificateKeyFile={SSL_PATH}/client/mongodb.pem"
+MONGO_CERT_KEY_FILE = os.environ.get('MONGO_CERT_KEY_FILE')
+MONGO_CA_FILE = os.environ.get('MONGO_CA_FILE')
+MONGO_URI = f"mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}/?ssl=true&tlsCAFile={MONGO_CA_FILE}&tlsCertificateKeyFile={MONGO_CERT_KEY_FILE}" 
 CELERY_RESULT_BACKEND = MONGO_URI
 CELERY_MONGODB_BACKEND_SETTINGS = {
     "database": MONGO_DB,

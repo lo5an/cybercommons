@@ -2,6 +2,7 @@ version: "3.7"
 services:
   cybercom_nginx:
     image: nginx:${NGINX_VERSION}
+    init: true
     restart: unless-stopped
     expose:
       - 80
