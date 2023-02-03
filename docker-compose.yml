@@ -21,6 +21,8 @@ services:
       - dc_config/cybercom_config.env
   cybercom_mongo:
     image: mongo:${MONGO_VERSION}
+    profiles:
+      - mongo
     command: --tlsMode requireTLS --tlsCertificateKeyFile /ssl/server/mongodb.pem --tlsCAFile /ssl/testca/cacert.pem --auth
     restart: unless-stopped
     env_file:
