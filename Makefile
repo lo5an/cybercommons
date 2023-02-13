@@ -18,10 +18,17 @@ ifneq ($(strip $(GITPOD_WORKSPACE_ID)),)
 	ALLOWED_HOSTS = .gitpod.io,localhost
 endif
 
-ifeq ($(strip $(shell docker compose 1>/dev/null && echo 0)),0)
-	COMPOSE := docker compose
+ifeq ($(strip $(shell docker compose > /dev/null 2>&1 && echo 0)),0)
+	COMPOSE = docker compose
 else
-	COMPOSE := docker-compose
+	COMPOSE = docker-compose
+endif
+
+ifeq ($(USE_LOCAL_MONGO),True)
+$(info using local mongo database)
+	COMPOSE := $(COMPOSE) --profile mongo
+else
+$(info using external mongo database)
 endif
 
 COMPOSE_INIT = $(COMPOSE) -f dc_config/images/docker-compose-init.yml
@@ -34,8 +41,8 @@ SHELL = /bin/bash
 	shell apishell celeryshell dbshell build force_build run stop test restart_api collectstatic
 
 .EXPORT_ALL_VARIABLES:
-UID=$(shell id -u)
-GID=$(shell id -g)
+UID=$(shell id $(LOCAL_USER) -u)
+GID=$(shell id $(LOCAL_USER) -g)
 
 init: 
 	$(COMPOSE_INIT) build
@@ -54,6 +61,10 @@ initssl:
 cert_dates:
 	# Show valid date ranges for backend ssl certificates
 	@$(COMPOSE_INIT) run --rm cybercom_openssl_init openssl x509 -noout -dates -in /ssl/server/cert.pem
+
+collectstatic: 
+	@mkdir -p web/static
+	@$(DJANGO_MANAGE) collectstatic --noinput
 
 superuser:
 	@$(DJANGO_MANAGE) createsuperuser 
@@ -104,18 +115,10 @@ force_build:
 	@$(COMPOSE) --compatibility build --no-cache
 
 run:
-ifeq ($(USE_LOCAL_MONGO),True)
-	@docker-compose --profile mongo --compatibility up -d
-else
-	@docker-compose --compatibility up -d
-endif
+	@$(COMPOSE) --compatibility up -d
 
 stop:
-ifeq ($(USE_LOCAL_MONGO),True)
-	@docker-compose --profile mongo --compatibility down
-else
-	@docker-compose --compatibility down
-endif
+	@$(COMPOSE) --compatibility down
 	
 test:
 	@$(COMPOSE) exec cybercom_api python -Wa manage.py test
@@ -123,6 +126,3 @@ test:
 restart_api:
 	@$(COMPOSE) restart cybercom_api
 
-collectstatic: 
-	@mkdir -p web/static
-	@$(COMPOSE) run --rm cybercom_api ./manage.py collectstatic --noinput
