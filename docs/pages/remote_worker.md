@@ -5,8 +5,9 @@ cyberCommons can scale horizontally by allowing remote workers to take on tasks 
 
 The execution units, called tasks, are executed concurrently on a single or more worker servers using multiprocessing, Eventlet, or gevent. Tasks can execute asynchronously (in the background) or synchronously (wait until ready).
 
-## Requirements
 
+## Requirements
+* Linux based environment, for example, Windows Subsystem for Linux (WSL) or a Linux server.
 * PIP - [Install](https://packaging.python.org/install_requirements_linux/#installing-pip-setuptools-wheel-with-linux-package-managers)
 * Copies of client certificates and credentials to communicate with central cyberCommons server:
   - MongoDB
@@ -22,7 +23,7 @@ The execution units, called tasks, are executed concurrently on a single or more
 
 ## Install Celery
 
-1. Create virtual environment and activate
+1. Create a virtual environment and activate
 
     ```sh
     python -m venv virtpy
@@ -44,7 +45,7 @@ The execution units, called tasks, are executed concurrently on a single or more
     ```sh
     wget https://raw.githubusercontent.com/cybercommons/cybercommons/master/docs/pages/files/celeryconfig.py
     ```
-1. Create SSL directory and copy cyberCommon's client certificates
+1. Create SSL directory and copy cyberCommons' client certificates
 
     ```sh
     mkdir ssl
@@ -53,7 +54,7 @@ The execution units, called tasks, are executed concurrently on a single or more
     cp cert.pem ssl/
     cp cacert.pem ssl/
     ```
-1. Configure celeryconfig.py to point to client certificates and use corresponding credentials (values in this example between "<" and ">" need to be updated to match your cyberCommon's configuration. Do not include the "<" and ">" characters.)
+1. Configure celeryconfig.py to point to client certificates and use corresponding credentials (values in this example between "<" and ">" need to be updated to match your cyberCommons' configuration. Do not include the "<" and ">" characters). If you are using an external MongoDB (see [Configure External MongoDB or AWS DocumentDB](configuration.md#configure-external-mongodb-or-aws-documentdb) for more information) backend, configure `result_backend` to match your usage. 
 
     ```sh
     broker_url = 'amqp://<username>:<password>@<broker_host>:<broker_port>/<broker_vhost>'
@@ -88,9 +89,9 @@ The execution units, called tasks, are executed concurrently on a single or more
     (virtpy) $ pip install -r requirements.txt
     ```
 
-### Launch Celery worker
+### Launch Celery Worker
 
-1. Run in foreground. See [Celery Worker Documentation](https://docs.celeryproject.org/en/stable/reference/cli.html#celery-worker) for more information.
+1. Run the following command. See [Celery Worker Documentation](https://docs.celeryproject.org/en/stable/reference/cli.html#celery-worker) for more options.
 
     ```sh
     celery worker -Q remote -l INFO -n dev-hostname
