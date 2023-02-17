@@ -38,7 +38,7 @@ endif
 
 COMPOSE_INIT = $(COMPOSE) -f dc_config/images/docker-compose-init.yml
 CERTBOT_INIT = $(COMPOSE) -f dc_config/images/certbot-initialization.yml
-DJANGO_MANAGE = $(COMPOSE) run --rm cybercom_api ./manage.py
+DJANGO_MANAGE = $(COMPOSE) run --rm $(API-CONTAINER) ./manage.py
 
 SHELL = /bin/bash
 
@@ -129,7 +129,3 @@ test:
 
 restart_api:
 	@$(COMPOSE) restart $(API-CONTAINER)
-
-collectstatic: 
-	@mkdir -p web/static
-	@$(COMPOSE) run --rm $(API-CONTAINER) ./manage.py collectstatic --noinput
