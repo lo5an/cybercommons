@@ -1,4 +1,48 @@
 version: "3.7"
+
+x-base-api:
+  &base-api
+  deploy:
+    resources:
+      limits:
+        cpus: ${API_CPUS}
+  image: api:${API_VERSION}
+  restart: unless-stopped
+  user: "${UID}:${GID}"
+  build:
+    context: .
+    args:
+      UNAME: apiuser
+      UID: "${UID}"
+      GID: "${GID}"
+      DOCKER_PYTHON_VERSION:
+  env_file:
+    - dc_config/cybercom_config.env
+    - dc_config/secrets.env
+  environment:
+    - GITPOD_WORKSPACE_ID
+    - GITPOD_WORKSPACE_CLUSTER_HOST
+    - GITPOD_PORT
+    - ALLOWED_HOSTS
+  volumes:
+    - ./dc_config/ssl/backend:/ssl
+    - ./db.sqlite3:/app/db.sqlite3
+    - ./web/static:/app/static
+  expose:
+    - 8080
+x-base-celery:
+  &base-celery
+  image: celeryapp
+  restart: unless-stopped
+  build: 
+    context: dc_config/images/celery
+    args:
+      - DOCKER_PYTHON_VERSION
+  volumes:
+    - ./dc_config/ssl/backend:/ssl
+  env_file:
+    - dc_config/cybercom_config.env
+    - dc_config/secrets.env
 services:
   cybercom_nginx:
     image: nginx:${NGINX_VERSION}
@@ -55,53 +99,33 @@ services:
       - dc_config/cybercom_config.env
     expose:
       - 11211
+  cybercom_celery_external_mongodb:
+    <<: *base-celery
+    depends_on:
+      - cybercom_rabbitmq
+    profiles: 
+    - external_mongo
   cybercom_celery:
-    image: celeryapp
-    restart: unless-stopped
-    build: 
-      context: dc_config/images/celery
-      args:
-        - DOCKER_PYTHON_VERSION
-    volumes:
-      - ./dc_config/ssl/backend:/ssl
-    env_file:
-      - dc_config/cybercom_config.env
-      - dc_config/secrets.env
+    <<: *base-celery
     depends_on:
       - cybercom_mongo
       - cybercom_rabbitmq
+    profiles: 
+    - mongo
+  cybercom_api_external_mongodb:
+    <<: *base-api
+    depends_on:
+      - cybercom_rabbitmq
+    profiles:
+      - external_mongo
   cybercom_api:
-    deploy:
-      resources:
-        limits:
-          cpus: ${API_CPUS}
-    image: api:${API_VERSION}
-    restart: unless-stopped
-    user: "${UID}:${GID}"
-    build:
-      context: .
-      args:
-        UNAME: apiuser
-        UID: "${UID}"
-        GID: "${GID}"
-        DOCKER_PYTHON_VERSION:
-    env_file:
-      - dc_config/cybercom_config.env
-      - dc_config/secrets.env
-    environment:
-      - GITPOD_WORKSPACE_ID
-      - GITPOD_WORKSPACE_CLUSTER_HOST
-      - GITPOD_PORT
-      - ALLOWED_HOSTS
-    volumes:
-      - ./dc_config/ssl/backend:/ssl
-      - ./db.sqlite3:/app/db.sqlite3
-      - ./web/static:/app/static
-    expose:
-      - 8080
+    <<: *base-api
     depends_on:
       - cybercom_mongo
       - cybercom_rabbitmq
+    profiles:
+      - mongo
+    
 volumes:
   mongodata:
     name: "${MONGO_DOCKER_VOLUME_PREFIX}_mongo"

@@ -18,10 +18,22 @@ ifneq ($(strip $(GITPOD_WORKSPACE_ID)),)
 	ALLOWED_HOSTS = .gitpod.io,localhost
 endif
 
-ifeq ($(strip $(shell docker compose 1>/dev/null && echo 0)),0)
-	COMPOSE := docker compose
+ifeq ($(strip $(shell docker compose > /dev/null 2>&1 && echo 0)),0)
+	COMPOSE = docker compose
 else
-	COMPOSE := docker-compose
+	COMPOSE = docker-compose
+endif
+
+ifeq ($(USE_LOCAL_MONGO),True)
+$(info using local mongo database)
+	COMPOSE := $(COMPOSE) --profile mongo --compatibility
+	API-CONTAINER = cybercom_api
+	CELERY-CONTAINER = cybercom_celery
+else
+$(info using external mongo database)
+	COMPOSE := $(COMPOSE) --profile external_mongo --compatibility
+	API-CONTAINER = cybercom_api_external_mongodb
+	CELERY-CONTAINER = cybercom_celery_external_mongodb
 endif
 
 COMPOSE_INIT = $(COMPOSE) -f dc_config/images/docker-compose-init.yml
@@ -81,11 +93,11 @@ shell:
 
 apishell:
 	@echo "Launching shell into Django"
-	@$(COMPOSE) exec cybercom_api python manage.py shell
+	@$(COMPOSE) exec $(API-CONTAINER) python manage.py shell
 
 celeryshell:
 	@echo "Lanuching shell into Celery"
-	@$(COMPOSE) exec cybercom_celery celery shell
+	@$(COMPOSE) exec $(CELERY-CONTAINER) celery shell
 
 dbshell:
 	@echo "Launching shell into MongoDB"
@@ -98,31 +110,22 @@ dbshell:
 		--password $$MONGO_PASSWORD
 
 build:
-	@$(COMPOSE) --compatibility build
+	@$(COMPOSE) build
 
 force_build:
-	@$(COMPOSE) --compatibility build --no-cache
+	@$(COMPOSE) build --no-cache
 
 run:
-ifeq ($(USE_LOCAL_MONGO),True)
-	@docker-compose --profile mongo --compatibility up -d
-else
-	@docker-compose --compatibility up -d
-endif
+	@$(COMPOSE) up -d
 
 stop:
-ifeq ($(USE_LOCAL_MONGO),True)
-	@docker-compose --profile mongo --compatibility down
-else
-	@docker-compose --compatibility down
-endif
-	
+	@$(COMPOSE) down	
 test:
-	@$(COMPOSE) exec cybercom_api python -Wa manage.py test
+	@$(COMPOSE) exec $(API-CONTAINER) python -Wa manage.py test
 
 restart_api:
-	@$(COMPOSE) restart cybercom_api
+	@$(COMPOSE) restart $(API-CONTAINER)
 
 collectstatic: 
 	@mkdir -p web/static
-	@$(COMPOSE) run --rm cybercom_api ./manage.py collectstatic --noinput
+	@$(COMPOSE) run --rm $(API-CONTAINER) ./manage.py collectstatic --noinput
