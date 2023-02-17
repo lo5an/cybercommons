@@ -41,7 +41,6 @@ The cyberCommons RESTful api provides permissions and groups:
         * Update Permission
         * Safe Methods (Read) Permissions
 
-
 ![User Permission](images/permission.png)
 
 

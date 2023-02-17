@@ -37,7 +37,7 @@ The page_size returns the available records up to page_size. If more records exi
         ?page_size=100
         ?page_size=0
 
-If page_size=0 API will return all records.
+If page_size=0, API will return all records.
 
 #### page:
 
@@ -47,8 +47,6 @@ The page variable will move to the page requested. If the page does not exist th
 
 1. api (Default) - Return type is HTML format
 2. json - Return type is JSON format
-3. jsonp - Return type is JSONP format
-4. xml - Return type is xml format
 
         ?format=json
 
@@ -59,7 +57,7 @@ The query url parameter is a JSON format query language. Please see below
 
 #### Query Language
 
-The API query language is based from the [MongoDB pyhton query](https://docs.mongodb.com/manual/tutorial/query-documents/#python) syntax.
+The API query language is based from the [MongoDB python query](https://docs.mongodb.com/manual/tutorial/query-documents/#python) syntax.
 
 #### Create Database and Collections
 
@@ -112,19 +110,16 @@ Please refer to [MongoDB Documentation](https://docs.mongodb.com/manual/core/agg
         ?aggregate=[{"$match":{"status": "urgent"}},
           {"$group":{"_id":"$productName","sumQuantity":{"$sum":"$quantity"}}}]
 
-### Task Execution (celery)
+### Task Execution (Celery)
 
-The Celery Distributed Task Queue is integrated throught the RESTful API. 
-
+The Celery Distributed Task Queue is integrated through the RESTful API.
 
 #### List of Available Tasks and Task History
 
         URL: /api/queue/
         Task History: /api/queue/usertasks/
 
-
 #### Task Submission
-
         Example:
         URL /api/queue/run/cybercomq.tasks.tasks.add/
         Docstring: Very import to give users the description of task. 
@@ -142,11 +137,11 @@ The Celery Distributed Task Queue is integrated throught the RESTful API.
         }
 
 
-function: task name
-queue: which queue to route the task
-args: [] List of argument
-kwargs: {} Keyword arguments
-tags: [] list of tags that will identify task run
+* function: task name
+* queue: which queue to route the task
+* args: [] List of arguments
+* kwargs: {} Keyword arguments
+* tags: [] list of tags that will identify task run
 
 #### Curl Command - Command-line Scripting
 
@@ -159,7 +154,6 @@ tags: [] list of tags that will identify task run
         headers ={'Content-Type':'application/json',"Authorization":"Token < authorized token >"}
         data = {"function":"cybercomq.tasks.tasks.add","queue":"celery","args":[2,2],"kwargs":{},"tags":["add"]}
         req=requests.post("http://localhost/api/queue/run/cybercomq.tasks.tasks.add/.json",data=json.dumps(data),headers=headers) 
-        print(req.text)
 
 #### Javascript JQuery $.postJSON
 
