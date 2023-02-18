@@ -6,7 +6,7 @@ The Cybercommons framework is a Django Rest Framework API. The API leverages Mon
 ## Requirements
 
 * [Docker Engine](https://docs.docker.com/engine/install/) or [Docker Desktop](https://docs.docker.com/get-docker/). If you are unsure, we recommend installing Docker Desktop.
-* [Docker Compose plugin](https://docs.docker.com/compose/install/) if you are not using Docker Desktop.
+* [Docker Compose plugin](https://docs.docker.com/compose/install/#scenario-two-install-the-compose-plugin) if you are not using Docker Desktop.
 * GNU Make or equivalent
 
 ## Installation
