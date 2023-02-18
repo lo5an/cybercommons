@@ -124,6 +124,7 @@ run:
 
 stop:
 	@$(COMPOSE) down	
+
 test:
 	@$(COMPOSE) exec $(API-CONTAINER) python -Wa manage.py test
 
