@@ -30,6 +30,10 @@ x-base-api:
     - ./web/static:/app/static
   expose:
     - 8080
+  networks:
+    default:
+      aliases:
+        - cybercom_api
 x-base-celery:
   &base-celery
   image: celeryapp
@@ -43,6 +47,10 @@ x-base-celery:
   env_file:
     - dc_config/cybercom_config.env
     - dc_config/secrets.env
+  networks:
+    default:
+      aliases:
+        - cybercom_celery
 services:
   cybercom_nginx:
     image: nginx:${NGINX_VERSION}
