@@ -5,16 +5,15 @@ The Cybercommons framework is a Django Rest Framework API. The API leverages Mon
 
 ## Requirements
 
-* Docker
-* Docker Compose
-    * `pip install docker-compose`
+* [Docker Engine](https://docs.docker.com/engine/install/) or [Docker Desktop](https://docs.docker.com/get-docker/). If you are unsure, we recommend installing Docker Desktop.
+* [Docker Compose plugin](https://docs.docker.com/compose/install/) if you are not using Docker Desktop.
 * GNU Make or equivalent
 
 ## Installation
 
-1. Edit values within dc_config/cybercom_config.env
+1. Edit values within dc_config/cybercom_config.env.
 1. Copy secrets_template.env into secrets.env under the same folder and add required credentials into it. 
-1. Initialize database and generate internal SSL certs
+1. Initialize database and generate internal SSL certs.
 
     ```sh
     make init
@@ -49,13 +48,13 @@ The Cybercommons framework is a Django Rest Framework API. The API leverages Mon
 
 1. Edit values within dc_config/cybercom_config.env[NGINX_HOST,NOTIFY_EMAIL,NGINX_TEMPLATE(These values must be set).
 1. Copy secrets_template.env into secrets.env under the same folder and add required credentials into it.
-1. Initialize database and generate internal SSL certs
+1. Initialize database and generate internal SSL certs.
 
     ```sh
     make init
     ```
 
-1. Initialize and Get TLS certificates from LetsEncrypt
+1. Initialize and Get TLS certificates from LetsEncrypt.
         
     ```sh
     make init_certbot
@@ -86,4 +85,6 @@ The Cybercommons framework is a Django Rest Framework API. The API leverages Mon
 
 ## TODO
 
+1. Improve documentation
+1. Improve testing
 1. Integration with Kubernetes
