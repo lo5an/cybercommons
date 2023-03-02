@@ -1,6 +1,8 @@
+from hashlib import md5
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from hashlib import md5
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -10,12 +12,15 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         user_groups = []
         for g in user.groups.all():
             user_groups.append(g.name)
-        token['name'] = user.get_full_name()
-        token['email'] = user.email
-        token['groups'] = user_groups
+        token["name"] = user.get_full_name()
+        token["email"] = user.email
+        token["groups"] = user_groups
         # The following hash is not used in any security context.
-        token['gravator_url']="https://www.gravatar.com/avatar/{0}".format(md5(user.email.strip(' \t\n\r').encode('utf-8')).hexdigest())  # nosec
+        token["gravator_url"] = "https://www.gravatar.com/avatar/{0}".format(
+            md5(user.email.strip(" \t\n\r").encode("utf-8")).hexdigest()  # nosec
+        )
         return token
+
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
