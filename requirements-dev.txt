@@ -1,0 +1,5 @@
+-r requirements.txt
+bandit[toml]
+black
+isort
+pre-commit

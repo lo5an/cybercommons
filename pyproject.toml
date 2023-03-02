@@ -1,0 +1,11 @@
+[tool.bandit]
+exclude_dirs = [".tox"]
+
+[tool.black]
+line-length = 120
+target-version = ["py39", "py311"]
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+src_paths = ["api", "catalog", "cybercom_queue", "data_store"]
