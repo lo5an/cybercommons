@@ -1,10 +1,7 @@
 _author__ = 'mstacy'
-from django.urls import include, path, re_path
+from django.urls import path, re_path
 
-from catalog.views import Catalog,CatalogData, CatalogDataDetail # SourceList, SourceDetail
-
-#from rest_framework.urlpatterns import format_suffix_patterns
-#from rest_framework.urlpatterns import format_suffix_patterns
+from catalog.views import Catalog, CatalogData, CatalogDataDetail
 
 urlpatterns = [
      path('data/', Catalog.as_view(),name='catalog-list'),
@@ -14,4 +11,3 @@ urlpatterns = [
              name='catalog-detail-id'),
 ]
 
-#urlpatterns = format_suffix_patterns(urlpatterns, allowed=['api', 'json', 'jsonp', 'xml', 'yaml'])
