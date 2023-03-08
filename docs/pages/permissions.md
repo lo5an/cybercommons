@@ -31,6 +31,7 @@ The cyberCommons RESTful api provides permissions and groups:
         * Add Permissions
         * Update Permission 
         * Safe Methods (Read) Permissions
+            * Add environment variable `SAFE_METHOD_PERM_REQUIRED` in `secrets_template.env`
 2. Data Store
 
     * Catalog Creation
@@ -40,6 +41,7 @@ The cyberCommons RESTful api provides permissions and groups:
         * Add Permissions
         * Update Permission
         * Safe Methods (Read) Permissions
+            * Add environment variable `SAFE_METHOD_PERM_REQUIRED` in `secrets_template.env`
 
 ![User Permission](images/permission.png)
 
