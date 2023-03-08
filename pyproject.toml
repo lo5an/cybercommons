@@ -9,3 +9,4 @@ include = '\.pyi?$'
 [tool.isort]
 profile = "black"
 src_paths = ["api", "catalog", "cybercom_queue", "data_store"]
+skip = ["docs"]
