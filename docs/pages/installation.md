@@ -6,9 +6,8 @@ The cyberCommons framework utilizes the [Django Rest Framework](https://www.djan
 
 ## Requirements
 
-* Docker
-* Docker Compose
-    * `pip install docker-compose`
+* [Docker Engine](https://docs.docker.com/engine/install/) or [Docker Desktop](https://docs.docker.com/get-docker/). If you are unsure, we recommend installing Docker Desktop.
+* [Docker Compose plugin](https://docs.docker.com/compose/install/#scenario-two-install-the-compose-plugin) if you are not using Docker Desktop.
 * GNU Make or equivalent
 
 ## Installation
