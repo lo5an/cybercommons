@@ -9,39 +9,45 @@ additionalRepositories:
 tasks:
   - name: cyberCommons
     before: cp dc_config/secrets_template.env dc_config/secrets.env
-    init: |
-      make init
-      make build
-      make collectstatic
+    init: >
+      make init &&
+      make build &&
+      make collectstatic &&
       gp sync-done cyber # 'cyber' is arbitrary name
     command: make run 
     
   - name: Islandora remote worker
-    before: | 
-      cd ../islandora-remote
+    before: >
+      cd ../islandora-remote &&
       git checkout islandoraq
     init: |
       gp sync-await cyber  #  wait for the above 'init' to finish
       make init
-    command: make run
+    command: |
+      gp ports await 5671
+      make run
 
   - name: Dspace remote worker
-    before: | 
-      cd ../dspace-remote
+    before: >
+      cd ../dspace-remote &&
       git checkout dspaceq
     init: |
       gp sync-await cyber  #  wait for the above 'init' to finish
       make init
-    command: make run
+    command: |
+      gp ports await 5671
+      make run
 
   - name: OULib remote worker
-    before: | 
-      cd ../oulib-remote
+    before: >
+      cd ../oulib-remote &&
       git checkout oulibq
     init: |
       gp sync-await cyber  #  wait for the above 'init' to finish
       make init
-    command: make run
+    command: |
+      gp ports await 5671
+      make run
 
 # Ports to expose on workspace startup
 ports:
