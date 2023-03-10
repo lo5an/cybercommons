@@ -11,8 +11,8 @@ class CatalogPermission(permissions.BasePermission):
     """
     def __init__(self,anonymous=config.CATALOG_ANONYMOUS):
         self.anonymous = anonymous
-        
     def has_permission(self, request, view):
+
         django_app = 'catalog'
         admin_perm = 'catalog.catalog_admin'
         path = request.path.split('/')
