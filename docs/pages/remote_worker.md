@@ -54,7 +54,7 @@ The execution units, called tasks, are executed concurrently on a single or more
     cp cert.pem ssl/
     cp cacert.pem ssl/
     ```
-1. Configure celeryconfig.py to point to client certificates and use corresponding credentials (values in this example between "<" and ">" need to be updated to match your cyberCommons' configuration. Do not include the "<" and ">" characters). If you are using an external MongoDB (see [Configure External MongoDB or AWS DocumentDB](configuration.md#configure-external-mongodb-or-aws-documentdb) for more information) backend, configure `result_backend` to match your usage. 
+1. Configure celeryconfig.py to point to client certificates and use corresponding credentials (values in this example between "<" and ">" need to be updated to match your cyberCommons' configuration. Do not include the "<" and ">" characters). If you are using an external MongoDB (see [Configure External MongoDB or AWS DocumentDB](configuration.html#configure-external-mongodb-or-aws-documentdb) for more information) backend, configure `result_backend` to match your usage. 
 
     ```sh
     broker_url = 'amqp://<username>:<password>@<broker_host>:<broker_port>/<broker_vhost>'
