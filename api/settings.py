@@ -34,7 +34,7 @@ GITPODID = os.getenv('GITPOD_WORKSPACE_ID')
 if GITPODID:
     GITPODPORT = os.getenv('GITPOD_PORT')
     GITPODHOST = os.getenv("GITPOD_WORKSPACE_CLUSTER_HOST")
-    GITPODURL = f"{GITPODPORT}-{GITPODID}.{GITPODHOST}"
+    GITPODURL = f"https://{GITPODPORT}-{GITPODID}.{GITPODHOST}"
     CSRF_TRUSTED_ORIGINS = [GITPODURL]
 
 # If you want to mount API with nginx with location other than /

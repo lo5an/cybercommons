@@ -1,8 +1,6 @@
 from django.urls import include, path, re_path
-from rest_framework import routers
-#from tutorial import views
 from django.contrib import admin
-from .views import APIRoot ,UserProfile
+from .views import APIRoot, UserProfile
 from django.utils.translation import gettext_lazy
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from rest_framework.urlpatterns import format_suffix_patterns

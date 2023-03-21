@@ -47,3 +47,8 @@ Contents:
    pages/permissions
    pages/help
    pages/authors
+.. toctree::
+   :maxdepth: 1
+   :caption: User Guide
+
+   pages/add_task
