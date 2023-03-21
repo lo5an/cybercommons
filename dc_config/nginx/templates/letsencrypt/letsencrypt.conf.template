@@ -5,13 +5,13 @@ server {
     server_tokens off;
 
     location / {
-        limit_except GET HEAD POST { deny all; }
+        limit_except GET HEAD { deny all; }
         return 302 https://$server_name$request_uri;
     }
     #error_page  404              /404.html;
 
     location /static {
-        limit_except GET HEAD POST { deny all; }
+        limit_except GET HEAD { deny all; }
         root   /usr/share/nginx/html;
         autoindex off;
     }
@@ -55,27 +55,27 @@ server {
     resolver 8.8.8.8;
     
     location / {
-        limit_except GET HEAD POST { deny all; }
+        limit_except GET HEAD { deny all; }
         root   /usr/share/nginx/html;
         autoindex on;
         add_header  Cache-Control private;
     }
 
     location /static {
-        limit_except GET HEAD POST { deny all; }
+        limit_except GET HEAD { deny all; }
         root   /usr/share/nginx/html;
         autoindex off;
     }
 
     location ~ /.well-known/acme-challenge/ {
-        limit_except GET HEAD POST { deny all; }
+        limit_except GET HEAD { deny all; }
         return 302 http://$server_name$request_uri;
     }
 
     # proxy the django api
     #
     location /api/ {
-        limit_except GET HEAD POST { deny all; }
+        limit_except GET HEAD POST PUT DELETE { deny all; }
         add_header 'Access-Control-Allow-Origin' '*';
         proxy_set_header Host $http_host;
         # The following two lines are needed to access through https
