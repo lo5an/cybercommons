@@ -9,6 +9,16 @@ services:
     volumes:
       - ./mongoinit/addmongouser:/addmongouser
       - mongo:/data/db
+  cybercom_sqlite3_init:
+    image: cybercom/sqlite3
+    command: /config/create_db.sh
+    build:
+      context: sqlite3
+      args:
+        - BASE_DOCKER_IMAGE
+    volumes:
+      - ./sqlite3:/config
+      - sqlite3:/data
   cybercom_openssl_init:
     image: cybercom/openssl
     user: "${UID}:${GID}"
@@ -25,3 +35,5 @@ services:
 volumes:
   mongo:
     name: "${MONGO_DOCKER_VOLUME_PREFIX}_mongo"
+  sqlite3:
+    name: cc_sqlite3

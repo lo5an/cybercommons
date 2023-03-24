@@ -138,3 +138,6 @@ volumes:
   mongodata:
     name: "${MONGO_DOCKER_VOLUME_PREFIX}_mongo"
     external: true
+  sqlite3:
+    name: cc_sqlite3
+    external: true
