@@ -28,6 +28,9 @@ x-base-api:
     - ./dc_config/ssl/backend:/ssl
     - ./db.sqlite3:/app/db.sqlite3
     - ./web/static:/app/static
+    - ./catalog:/app/catalog
+    - ./cybercom_queue:/app/cybercom_queue
+    - ./data_store:/app/data_store
   expose:
     - 8080
   networks:
@@ -137,4 +140,7 @@ services:
 volumes:
   mongodata:
     name: "${MONGO_DOCKER_VOLUME_PREFIX}_mongo"
+    external: true
+  sqlite3:
+    name: cc_sqlite3
     external: true

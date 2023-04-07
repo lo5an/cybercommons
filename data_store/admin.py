@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
 # Register your models here.
 from api import config
-from .models import dataStore
+from .models import dataStore, DatabasePermission, CollectionPermission
 #from pymongo import MongoClient
 from celery import Celery
 
@@ -43,3 +43,21 @@ for database in db.list_database_names():
 
 #create admin permissions
 setpermissions('data_store','datastore_admin',"Data Store Admin")
+
+class DatabasePermissionAdmin(admin.ModelAdmin):
+    list_display = ('database_name','isPublic')
+
+class CollectionPermissionAdmin(admin.ModelAdmin):
+    def database_name(self, obj):
+            return obj.database.database_name
+    database_name.short_description = 'Database Name' 
+    
+    list_display = ('collection_name', 'database_name', 'isPublic')
+    
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields.pop('database', None)
+        return form
+
+admin.site.register(DatabasePermission, DatabasePermissionAdmin)
+admin.site.register(CollectionPermission, CollectionPermissionAdmin)

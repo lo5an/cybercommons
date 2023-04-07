@@ -6,7 +6,7 @@ from rest_framework.reverse import reverse
 from rest_framework.exceptions import APIException, ValidationError
 #from pymongo import MongoClient
 from api import config
-from .models import dataStore
+from .models import dataStore, DatabasePermission, CollectionPermission
 # Create your views here.
 from rest_framework.settings import api_settings
 from .mongo_paginator import MongoDataPagination, MongoDataUpdate, MongoDistinct,MongoGroupby, MongoDataGet,MongoDataDelete,MongoDataSave,MongoDataInsert, MongoAggregate
@@ -101,10 +101,16 @@ class MongoDataStore(APIView):
         # Action Create (default None)
         if database:
             col = request.data.get('collection', None)
+            isPublic = request.data.get('public', True)
             if col:
                 data = request.data.get('data', {})
                 if self.db[database][col].estimated_document_count() == 0:
                     self.db[database][col].insert_one(data)
+                    
+                    # Create and save CollectionPermission instance
+                    db = DatabasePermission.objects.filter(database_name=database).first()
+                    collectionperm = CollectionPermission(collection_name=col, database=db, isPublic=isPublic)
+                    collectionperm.save()
                     if not data:
                         self.db[database][col].delete_one({})
                     return Response({'database': database, 'collection': col})
@@ -113,8 +119,13 @@ class MongoDataStore(APIView):
                 return Response({'ERROR': "Must submit 'collection' name as part of post"})
         else:
             data = request.data.get('database', None)
+            isPublic = request.data.get('public', True)
             if data:
                 self.db[data]['default_collection'].insert_one({})
+                
+                # Create and save DatabasePermission instance
+                dbperm = DatabasePermission(database_name=data, isPublic=isPublic)
+                dbperm.save()
                 return Response({'database': data})
             else:
                 return Response({'ERROR': "Must submit 'database' name as part of post"})
