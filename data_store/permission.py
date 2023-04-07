@@ -2,6 +2,7 @@ from rest_framework import permissions
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
 from api import config
+from .models import DatabasePermission, CollectionPermission
 
 # FIXME: confirm this is dead code
 # class dataStorePermission(permissions.BasePermission):
@@ -64,20 +65,19 @@ class DataStorePermission(permissions.BasePermission):
         admin_perm = 'data_store.datastore_admin'
         database = view.kwargs['database']
         collection = view.kwargs['collection'] 
+        
+        database_permission = DatabasePermission.objects.filter(database_name=database).first()
+        collection_permission = CollectionPermission.objects.filter(collection_name=collection).first()
+        
         perms=list(request.user.get_all_permissions())
         if request.method in permissions.SAFE_METHODS:
-            code_perm= "{0}.{1}_{2}_{3}".format(django_app,database,collection,'safe')
-            if "{0}_{1}".format(database,collection) in self.read_perm_required:
-                if code_perm in perms:
-                    return True
-                else:
-                    return False
-            if self.anonymous or admin_perm in perms or code_perm in perms:
+            if database:
+                permission = collection_permission if collection else database_permission
+            if admin_perm in perms or (permission and permission.isPublic):
                 return True
-            else:
-                return False
+            return self.anonymous or admin_perm in perms    
         else:
-            code_perm= "{0}.{1}_{2}_{3}".format(django_app,database,collection,request.method.lower())
+            code_perm= "{0}.{1}.{2}_{3}".format(django_app,database,collection,request.method.lower())
             if request.user.is_superuser or admin_perm in perms or code_perm in perms:
                 return True
             else:
