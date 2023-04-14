@@ -60,8 +60,8 @@ class MongoDataStore(APIView):
             database_permission = DatabasePermission.objects.filter(database_name=database).first()
             database_is_public = database_permission.isPublic if database_permission else False
 
-            # Show collections only if the current user is an admin or the database is public
-            if admin or database_is_public:
+            # Show collections only if the current user is an admin or the database is public or no permission is set for the database
+            if admin or database_is_public or not database_permission:
                 for col in data:
                     if "%s.%s" % (database, col) in self.exclude or col in self.exclude:
                         pass

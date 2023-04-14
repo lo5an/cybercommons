@@ -76,8 +76,7 @@ class DataStorePermission(permissions.BasePermission):
             if admin_perm in perms or (permission and permission.isPublic):
                 return True
             else:
-                return False
-            return self.anonymous  
+                return False 
         else:
             code_perm= "{0}.{1}.{2}_{3}".format(django_app,database,collection,request.method.lower())
             if request.user.is_superuser or admin_perm in perms or code_perm in perms:
