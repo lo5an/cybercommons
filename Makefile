@@ -43,7 +43,8 @@ DJANGO_MANAGE = $(COMPOSE) run --rm $(API-CONTAINER) ./manage.py
 SHELL = /bin/bash
 
 .PHONY: init intidb initssl cert_dates superuser migrate flush init_certbot renew_certbot \
-	shell apishell celeryshell dbshell build force_build run stop test restart_api collectstatic
+	shell apishell celeryshell dbshell build force_build run stop test restart_api collectstatic \
+	populate_db_perms
 
 .EXPORT_ALL_VARIABLES:
 UID=$(shell id $(LOCAL_USER) -u)
@@ -79,6 +80,9 @@ migrate:
 
 flush:
 	@$(DJANGO_MANAGE) flush
+
+populate_db_perms:
+	@$(DJANGO_MANAGE) populate_db_perms
 
 init_certbot:
 	$(CERTBOT_INIT) build
