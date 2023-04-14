@@ -1,6 +1,9 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
+from django import forms
+from django.core.exceptions import ValidationError
+
 # Register your models here.
 from api import config
 from .models import dataStore, DatabasePermission, CollectionPermission
@@ -47,6 +50,12 @@ setpermissions('data_store','datastore_admin',"Data Store Admin")
 class DatabasePermissionAdmin(admin.ModelAdmin):
     list_display = ('database_name','isPublic')
 
+class CollectionPermissionForm(forms.ModelForm):
+    database = forms.ModelChoiceField(queryset=DatabasePermission.objects.all())
+    class Meta:
+        model = CollectionPermission
+        fields = '__all__'
+        
 class CollectionPermissionAdmin(admin.ModelAdmin):
     def database_name(self, obj):
             return obj.database.database_name
@@ -54,10 +63,22 @@ class CollectionPermissionAdmin(admin.ModelAdmin):
     
     list_display = ('collection_name', 'database_name', 'isPublic')
     
+     # Add the database field to the admin form
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        form.base_fields.pop('database', None)
+        form.base_fields['database'].queryset = DatabasePermission.objects.all()
         return form
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "database":
+            kwargs["queryset"] = DatabasePermission.objects.all()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    
+    def save_model(self, request, obj, form, change):
+        if obj.isPublic and not obj.database.isPublic:
+            messages.error(request, "Set the database to public first.")
+        else:
+            super().save_model(request, obj, form, change)
 
 admin.site.register(DatabasePermission, DatabasePermissionAdmin)
 admin.site.register(CollectionPermission, CollectionPermissionAdmin)

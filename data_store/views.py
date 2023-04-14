@@ -52,13 +52,25 @@ class MongoDataStore(APIView):
             self.title = "Collection"
             data = list(self.db[database].list_collection_names())
             data.sort()
-            for col in data:
-                if "%s.%s" % (database, col) in self.exclude or col in self.exclude:
-                    pass
-                else:
-                    urls.append(reverse("%s-detail" % (self.view_reverse),
-                                        kwargs={'database': database, 'collection': col}, request=request))
-            return Response({'Database': database, 'Available Collections': urls})
+            
+            # Check if the current user is an admin
+            admin = request.user.is_superuser
+
+            # Check if the database is public
+            database_permission = DatabasePermission.objects.filter(database_name=database).first()
+            database_is_public = database_permission.isPublic if database_permission else False
+
+            # Show collections only if the current user is an admin or the database is public
+            if admin or database_is_public:
+                for col in data:
+                    if "%s.%s" % (database, col) in self.exclude or col in self.exclude:
+                        pass
+                    else:
+                        urls.append(reverse("%s-detail" % (self.view_reverse),
+                                            kwargs={'database': database, 'collection': col}, request=request))
+                return Response({'Database': database, 'Available Collections': urls})
+            else:
+                return Response({'Database': database, 'message': 'This database is private.'})
         else:
             self.title = "Database"
             # This section used for catalog django app
@@ -108,7 +120,11 @@ class MongoDataStore(APIView):
                     self.db[database][col].insert_one(data)
                     
                     # Create and save CollectionPermission instance
-                    db = DatabasePermission.objects.filter(database_name=database).first()
+                    db = DatabasePermission.objects.get_or_create(database_name=database)[0]
+                    #db = DatabasePermission.objects.filter(database_name=database).first()
+                    if db is None:
+                        db = DatabasePermission(database_name=database)
+                        db.save()
                     collectionperm = CollectionPermission(collection_name=col, database=db, isPublic=isPublic)
                     collectionperm.save()
                     if not data:
