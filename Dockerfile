@@ -24,4 +24,4 @@ RUN groupadd -g $GID -o $UNAME \
 USER $UNAME
 
 EXPOSE 8080
-CMD ["gunicorn", "--config=gunicorn.py", "api.wsgi:application"]
+CMD ["gunicorn", "--config=gunicorn.py", "--reload", "api.wsgi:application"]

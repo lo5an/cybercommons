@@ -3,10 +3,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
 # Register your models here.
 from api import config
-from .models import catalogModel
+from .models import catalogModel, Catalog_DatabasePermission, Catalog_CollectionPermission
 #from pymongo import MongoClient
 from celery import Celery
-
+from data_store.admin import DatabasePermissionAdmin, CollectionPermissionAdmin
 
 class celeryConfig:
     BROKER_URL = config.BROKER_URL
@@ -39,3 +39,12 @@ for catalog in config.CATALOG_INCLUDE:
 
 #Create Admin Permissions
 setpermissions('catalog','catalog_admin','Catalog Admin')
+
+class Catalog_DatabasePermissionAdmin(DatabasePermissionAdmin):
+    pass
+
+class Catalog_CollectionPermissionAdmin(CollectionPermissionAdmin):
+    pass
+
+admin.site.register(Catalog_DatabasePermission, Catalog_DatabasePermissionAdmin)
+admin.site.register(Catalog_CollectionPermission, Catalog_CollectionPermissionAdmin)

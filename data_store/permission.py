@@ -56,13 +56,17 @@ class DataStorePermission(permissions.BasePermission):
     SAFE_METHODS always TRUE
     UNSAFE need appropriate Permissions
     """
+    django_app = 'data_store'
+    admin_perm = 'data_store.datastore_admin'
+    view_perm = 'data_store.view_datastore'
     def __init__(self,anonymous=config.DATA_STORE_ANONYMOUS,read_perm_required=config.SAFE_METHOD_PERM_REQUIRED):
         self.anonymous = anonymous
         self.read_perm_required = read_perm_required
 
     def has_permission(self, request, view):
-        django_app = 'data_store'
-        admin_perm = 'data_store.datastore_admin'
+        django_app = self.django_app
+        admin_perm = self.admin_perm
+        view_perm = self.view_perm
         database = view.kwargs['database']
         collection = view.kwargs['collection'] 
         
@@ -73,7 +77,7 @@ class DataStorePermission(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             if database:
                 permission = collection_permission if collection else database_permission
-            if admin_perm in perms or (permission and permission.isPublic):
+            if (view_perm in perms) or (admin_perm in perms) or (permission and permission.isPublic):
                 return True
             else:
                 return False 
