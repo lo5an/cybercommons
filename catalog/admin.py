@@ -1,6 +1,9 @@
+from typing import Any
 from django.contrib import admin, messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
+from django.db.models.query import QuerySet
+from django.http.request import HttpRequest
 # Register your models here.
 from api import config
 from .models import catalogModel, Catalog_DatabasePermission, Catalog_CollectionPermission
@@ -65,12 +68,20 @@ class Catalog_DatabasePermissionAdmin(admin.ModelAdmin):
     inlines = [CollectionPermissionInline]
     actions = ['make_public', 'make_private']
     
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        # use __in filter to filter queryset
+        queryset = queryset.filter(database_name__in=config.CATALOG_INCLUDE)
+        return queryset
+    
     def make_public(self, request, queryset):
         queryset.update(isPublic=True)
     make_public.short_description = "Set selected databases to public"
     
     def make_private(self, request, queryset):
         queryset.update(isPublic=False)
+        for database in queryset:
+            Catalog_CollectionPermission.objects.filter(database=database).update(isPublic=False)
     make_private.short_description = "Set selected databases to private"
     
     def save_formset(self, request, form, formset, change):
@@ -119,6 +130,11 @@ class Catalog_CollectionPermissionAdmin(admin.ModelAdmin):
     list_display = ('collection_name', 'database_name', 'isPublic')
     actions = ['make_public', 'make_private']
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        # use __in filter to filter queryset
+        return queryset.filter(database__database_name__in=config.CATALOG_INCLUDE)
+        
     def make_public(self, request, queryset):
         """
         Action to set selected CollectionPermissions to public if their
