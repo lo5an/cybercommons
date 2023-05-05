@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from ..models import Catalog_DatabasePermission, Catalog_CollectionPermission
+from catalog.models import DatabasePermission, CollectionPermission
 from api import config
 from celery import Celery
 from bson import ObjectId
@@ -23,14 +23,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         db = app.backend.database.client
         for database in db.list_database_names():
-            if database not in config.CATALOG_EXCLUDE:
-                dbPerm = Catalog_DatabasePermission.objects.filter(database_name=database).first()
+            if database in config.CATALOG_INCLUDE:
+                dbPerm = DatabasePermission.objects.filter(database_name=database).first()
                 if dbPerm is None:
-                    dbPerm = Catalog_DatabasePermission(database_name=database)
+                    dbPerm = DatabasePermission(database_name=database)
                     dbPerm.save()
                 for collection in db[database].list_collection_names():
                     if collection not in config.CATALOG_EXCLUDE:
-                        colPerm = Catalog_CollectionPermission.objects.filter(collection_name=collection).first()
+                        colPerm = CollectionPermission.objects.filter(collection_name=collection).first()
                         if colPerm is None:
-                            colPerm = Catalog_CollectionPermission(collection_name=collection, database=dbPerm)
+                            colPerm = CollectionPermission(collection_name=collection, database=dbPerm)
                             colPerm.save()
