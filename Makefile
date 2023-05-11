@@ -83,6 +83,7 @@ flush:
 
 populate_db_perms:
 	@$(DJANGO_MANAGE) populate_db_perms
+	@$(DJANGO_MANAGE) catalog_perms
 
 init_certbot:
 	$(CERTBOT_INIT) build
