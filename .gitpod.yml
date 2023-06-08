@@ -10,15 +10,15 @@ tasks:
   - name: cyberCommons
     before: cp dc_config/secrets_template.env dc_config/secrets.env
     init: |
-      make init &&
-      make build &&
-      make collectstatic &&
+      make init
+      make build
+      make collectstatic
       gp sync-done cyber # 'cyber' is arbitrary name
     command: make run 
     
   - name: Islandora remote worker
     before: | 
-      cd ../islandora-remote &&
+      cd ../islandora-remote
       git checkout islandoraq
     init: |
       gp sync-await cyber  #  wait for the above 'init' to finish
@@ -27,7 +27,7 @@ tasks:
 
   - name: Dspace remote worker
     before: | 
-      cd ../dspace-remote &&
+      cd ../dspace-remote
       git checkout dspaceq
     init: |
       gp sync-await cyber  #  wait for the above 'init' to finish
@@ -36,7 +36,7 @@ tasks:
 
   - name: OULib remote worker
     before: | 
-      cd ../oulib-remote &&
+      cd ../oulib-remote
       git checkout oulibq
     init: |
       gp sync-await cyber  #  wait for the above 'init' to finish
