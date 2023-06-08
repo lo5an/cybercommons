@@ -9,10 +9,10 @@ additionalRepositories:
 tasks:
   - name: cyberCommons
     before: cp dc_config/secrets_template.env dc_config/secrets.env
-    init: |
-      make init
-      make build
-      make collectstatic
+    init: >
+      make init &&
+      make build &&
+      make collectstatic &&
       gp sync-done cyber
     command: make run 
     
