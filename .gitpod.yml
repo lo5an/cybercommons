@@ -13,7 +13,7 @@ tasks:
       make init
       make build
       make collectstatic
-      gp sync-done cyber # 'cyber' is arbitrary name
+      gp sync-done cyber
     command: make run 
     
   - name: Islandora remote worker
@@ -21,8 +21,7 @@ tasks:
       cd ../islandora-remote
       git checkout islandoraq
     init: |
-      gp sync-await cyber  #  wait for the above 'init' to finish
-      make init
+      gp sync-await cyber && make init
     command: make run
 
   - name: Dspace remote worker
@@ -30,8 +29,7 @@ tasks:
       cd ../dspace-remote
       git checkout dspaceq
     init: |
-      gp sync-await cyber  #  wait for the above 'init' to finish
-      make init
+      gp sync-await cyber && make init
     command: make run
 
   - name: OULib remote worker
@@ -39,8 +37,7 @@ tasks:
       cd ../oulib-remote
       git checkout oulibq
     init: |
-      gp sync-await cyber  #  wait for the above 'init' to finish
-      make init
+      gp sync-await cyber && make init
     command: make run
 
 # Ports to expose on workspace startup
