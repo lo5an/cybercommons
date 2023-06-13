@@ -10,13 +10,11 @@ tasks:
   - name: OULib remote worker
     before: | 
       cd ../oulib-remote
-      ls -l .git/
+      sleep 1
       git checkout oulibq
     init: |
-      ls -l .git/
       echo "doing init"
     command: |
-      ls -l .git
       echo "doing command"
 
 
