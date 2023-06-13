@@ -14,6 +14,8 @@ tasks:
       echo "doing init"
     command: |
       git show-ref
+      echo "BOOP"
+      git show-ref
       echo "doing command"
 
 
