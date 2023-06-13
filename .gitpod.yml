@@ -6,7 +6,15 @@ additionalRepositories:
   - url: https://github.com/oulib-datacatalog/celery-remote-worker
     checkoutLocation: oulib-remote
 
-tasks: []
+tasks: 
+  - name: OULib remote worker
+    before: | 
+      cd ../oulib-remote
+      git checkout oulibq
+    init: |
+      echo "doing init"
+    command: echo "doing command"
+
 
 # Ports to expose on workspace startup
 ports:
