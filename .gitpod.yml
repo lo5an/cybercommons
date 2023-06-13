@@ -13,7 +13,7 @@ tasks:
     init: |
       echo "doing init"
     command: |
-      git checkout oulibq
+      git status
       echo "doing command"
 
 
