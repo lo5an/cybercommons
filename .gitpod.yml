@@ -10,10 +10,14 @@ tasks:
   - name: OULib remote worker
     before: | 
       cd ../oulib-remote
+      ls -l .git/
       git checkout oulibq
     init: |
+      ls -l .git/
       echo "doing init"
-    command: echo "doing command"
+    command: |
+      ls -l .git
+      echo "doing command"
 
 
 # Ports to expose on workspace startup
