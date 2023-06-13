@@ -13,7 +13,7 @@ tasks:
     init: |
       echo "doing init"
     command: |
-      git status
+      git show-ref
       echo "doing command"
 
 
