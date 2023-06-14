@@ -12,11 +12,14 @@ tasks:
       cd ../oulib-remote
     init: |
       echo "doing init"
+      pwd
     command: |
+      pwd
       git show-ref
-      echo "BOOP"
-      git show-ref
-      echo "doing command"
+      git remote set-branches origin 'oulibq'
+      git fetch
+      git switch oulibq
+      
 
 
 # Ports to expose on workspace startup
