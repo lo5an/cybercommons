@@ -19,6 +19,8 @@ tasks:
   - name: Islandora remote worker
     before: | 
       cd ../islandora-remote
+      git remote set-branches origin 'islandoraq'
+      git fetch
       git checkout islandoraq
     init: |
       gp sync-await cyber && make init
@@ -27,6 +29,8 @@ tasks:
   - name: Dspace remote worker
     before: | 
       cd ../dspace-remote
+      git remote set-branches origin 'dspaceq'
+      git fetch
       git checkout dspaceq
     init: |
       gp sync-await cyber && make init
@@ -35,6 +39,8 @@ tasks:
   - name: OULib remote worker
     before: | 
       cd ../oulib-remote
+      git remote set-branches origin 'oulibq'
+      git fetch
       git checkout oulibq
     init: |
       gp sync-await cyber && make init
