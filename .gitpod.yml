@@ -1,3 +1,5 @@
+# The celery-remote-worker repo contains config for deploying remote worker 
+# code to a gitpod environment along with cybercommons for dev/test work. 
 additionalRepositories: 
   - url: https://github.com/oulib-datacatalog/celery-remote-worker
     checkoutLocation: islandora-remote
@@ -5,6 +7,8 @@ additionalRepositories:
     checkoutLocation: dspace-remote
   - url: https://github.com/oulib-datacatalog/celery-remote-worker
     checkoutLocation: oulib-remote
+workspaceLocation: cybercommons/cybercommons.code-workspace
+
 
 tasks:
   - name: cyberCommons
