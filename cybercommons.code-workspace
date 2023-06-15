@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "." //cybercommons repository
+		},
+		{
+			"path": "../dspace-remote"
+		},
+		{
+			"path": "../islandora-remote"
+		},
+		{
+			"path": "../oulib-remote"
+		}
+	]
+}
